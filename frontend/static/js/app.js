@@ -9,7 +9,7 @@
 /* ──────────────────────────────────────────────────────────────
    CONSTANTS
    ────────────────────────────────────────────────────────────── */
-const API_URL = "https://internship-recommendation-zlwk.onrender.com/api/recommend";
+const API_BASE = "https://internship-recommendation-zlwk.onrender.com";
 /* ──────────────────────────────────────────────────────────────
    DOM REFERENCES
    ────────────────────────────────────────────────────────────── */
