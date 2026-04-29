@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InternIQ — AI Internship Recommender</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ───────── BACKGROUND CANVAS ───────── -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ───────── NAV ───────── -->
+<nav class="nav">
+  <div class="nav-brand">
+    <span class="brand-icon">◈</span>
+    <span class="brand-name">InternIQ</span>
+  </div>
+  <div class="nav-tagline">Powered by AI </div>
+</nav>
+
+<!-- ───────── HERO ───────── -->
+<header class="hero">
+  <div class="hero-eyebrow">AI-Powered Career Matching</div>
+  <h1 class="hero-title">
+    Find internships<br/>
+    <span class="hero-accent">that find you.</span>
+  </h1>
+  <p class="hero-sub">
+    Drop your skills, paste your interests, or upload your résumé —<br/>
+    our ML engine matches you to the roles you're built for.
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">150+</span><span class="stat-label">Internships</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">TF-IDF</span><span class="stat-label">Engine</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-num">NLP</span><span class="stat-label">Resume Parser</span></div>
+  </div>
+</header>
+
+<!-- ───────── MAIN LAYOUT ───────── -->
+<main class="layout">
+
+  <!-- ── INPUT PANEL ── -->
+  <section class="panel panel-input" id="input-panel">
+
+    <!-- Skills -->
+    <div class="field-group">
+      <label class="field-label">
+        <span class="label-icon">⚡</span> Your Skills
+      </label>
+      <textarea
+        id="skills-input"
+        class="field-textarea"
+        rows="3"
+        placeholder="Python, Machine Learning, React, SQL, Docker…"
+      ></textarea>
+      <p class="field-hint">Separate with commas or spaces — be as specific as possible.</p>
+    </div>
+
+    <!-- Interests -->
+    <div class="field-group">
+      <label class="field-label">
+        <span class="label-icon">🎯</span> Interests / Domain
+      </label>
+      <textarea
+        id="interests-input"
+        class="field-textarea"
+        rows="2"
+        placeholder="I love building ML models and working with NLP pipelines…"
+      ></textarea>
+    </div>
+
+    <!-- Filters row -->
+    <div class="filters-row">
+      <div class="field-group field-half">
+        <label class="field-label">
+          <span class="label-icon">📍</span> Location
+        </label>
+        <select id="location-filter" class="field-select">
+          <option value="">Any location</option>
+        </select>
+      </div>
+      <div class="field-group field-half">
+        <label class="field-label">
+          <span class="label-icon">🧭</span> Domain
+        </label>
+        <select id="domain-filter" class="field-select">
+          <option value="">All domains</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Top-K slider -->
+    <div class="field-group">
+      <label class="field-label">
+        <span class="label-icon">🏆</span> Results to show:
+        <strong id="topk-display">8</strong>
+      </label>
+      <input type="range" id="topk-slider" class="field-range" min="3" max="15" value="8" />
+    </div>
+
+    <!-- Resume upload zone -->
+    <div class="upload-zone" id="upload-zone">
+      <div class="upload-icon">📄</div>
+      <div class="upload-label">Drop résumé PDF here</div>
+      <div class="upload-sub">or <label for="file-input" class="upload-link">browse to upload</label></div>
+      <input type="file" id="file-input" accept=".pdf" style="display:none" />
+      <div id="upload-status" class="upload-status"></div>
+    </div>
+
+    <!-- Extracted skills pill strip -->
+    <div id="extracted-skills-wrap" class="extracted-skills-wrap" style="display:none">
+      <p class="extracted-label">Skills detected from résumé:</p>
+      <div id="extracted-skills-pills" class="pills-strip"></div>
+    </div>
+
+    <!-- CTA -->
+    <button class="btn-recommend" id="recommend-btn">
+      <span class="btn-text">Get Recommendations</span>
+      <span class="btn-arrow">→</span>
+    </button>
+
+  </section>
+
+  <!-- ── RESULTS PANEL ── -->
+  <section class="panel panel-results" id="results-panel">
+
+    <div id="results-placeholder" class="results-placeholder">
+      <div class="placeholder-art">
+        <div class="orbit-ring ring-1"></div>
+        <div class="orbit-ring ring-2"></div>
+        <div class="orbit-ring ring-3"></div>
+        <div class="orbit-core">◈</div>
+      </div>
+      <p class="placeholder-title">Your matches will appear here</p>
+      <p class="placeholder-sub">Fill in your profile on the left and hit <em>Get Recommendations</em>.</p>
+    </div>
+
+    <div id="results-loading" class="results-loading" style="display:none">
+      <div class="spinner"></div>
+      <p>Analysing your profile…</p>
+    </div>
+
+    <div id="results-header" class="results-header" style="display:none">
+      <h2 class="results-title">Your Top Matches</h2>
+      <span id="results-count" class="results-badge">0 results</span>
+    </div>
+
+    <div id="cards-container" class="cards-container"></div>
+
+  </section>
+
+</main>
+
+<!-- ───────── CARD TEMPLATE (hidden) ───────── -->
+<template id="card-template">
+  <article class="card" data-grade="">
+    <div class="card-header">
+      <div class="card-meta-left">
+        <span class="card-domain"></span>
+        <span class="card-location"></span>
+      </div>
+      <div class="card-score-wrap">
+        <svg class="score-ring" viewBox="0 0 36 36">
+          <circle class="ring-bg" cx="18" cy="18" r="15.9" />
+          <circle class="ring-fill" cx="18" cy="18" r="15.9" />
+        </svg>
+        <span class="score-label"></span>
+      </div>
+    </div>
+
+    <h3 class="card-title"></h3>
+    <p class="card-company"></p>
+
+    <div class="card-badges">
+      <span class="badge badge-duration"></span>
+      <span class="badge badge-stipend"></span>
+      <span class="badge badge-grade"></span>
+    </div>
+
+    <div class="card-skills">
+      <p class="skills-heading">Required Skills</p>
+      <div class="skills-pills"></div>
+    </div>
+
+    <details class="card-explanation">
+      <summary>Why this internship?</summary>
+      <p class="explanation-text"></p>
+    </details>
+  </article>
+</template>
+
+<!-- ───────── TOAST ───────── -->
+<div id="toast" class="toast" role="alert"></div>
+
+<script src="/static/js/app.js?v=2"></script>
+</body>
+</html>
