@@ -80,7 +80,7 @@ internship-recommender/
 
 ```bash
 # If using git:
-git clone <your-repo-url>
+git clone https://github.com/AmanMishra8678/Internship-Recommendation.git
 cd internship-recommender
 
 # Or just extract the zip and cd into it
