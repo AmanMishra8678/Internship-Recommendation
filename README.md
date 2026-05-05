@@ -4,6 +4,42 @@
 
 ---
 
+## 👥 Group Members
+
+<div align="center">
+
+<table>
+<tr>
+<td align="center">
+<a href="https://github.com/srijagriti">
+<img src="https://github.com/srijagriti.png" width="100px;" alt="srijagriti"/>
+<br /><sub><b>srijagriti</b></sub>
+</a>
+</td>
+
+<td align="center">
+<a href="https://github.com/Agastya000">
+<img src="https://github.com/Agastya000.png" width="100px;" alt="Agastya000"/>
+<br /><sub><b>Agastya000</b></sub>
+</a>
+</td>
+
+<td align="center">
+<a href="https://github.com/DevanshMishra152">
+<img src="https://github.com/DevanshMishra152.png" width="100px;" alt="DevanshMishra152"/>
+<br /><sub><b>DevanshMishra152</b></sub>
+</a>
+</td>
+</tr>
+</table>
+
+</div>
+
+---
+
+
+---
+
 ## 📐 Project Architecture
 
 ```
